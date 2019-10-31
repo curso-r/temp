@@ -209,3 +209,24 @@ bd_arrumado %>% kable()
 library(DT)
 bd_arrumado %>% datatable()
 ```
+
+
+
+
+Anotações {data-orientation=columns}
+============================================
+
+<h4>Próximos passos</h4>
+
+1. reparar que dá para colocar código HMTL no texto.
+2. revisitar os graficos e colocar ggplotly() onde lhe convier.
+3. solicitar ao professor para falar sobre graficos waterfall.
+
+<h4>Referências</h4>
+
+- [rmarkdown](https://rmarkdown.rstudio.com/lesson-1.html)
+- [rmarkdown book](https://bookdown.org/yihui/rmarkdown/)
+- [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/using.html)
+- [kable](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html)
+- [bookdown](https://bookdown.org/yihui/bookdown/get-started.html)
+
