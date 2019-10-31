@@ -1,0 +1,211 @@
+---
+title: "Preço da Energia"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(knitr)
+
+theme_set(theme_minimal(12))
+
+# Exercício 1: carregar base BD.xlsx usando a função read_excel()
+bd <- 
+
+bd_arrumado <- bd %>%
+  mutate(
+    data = paste(Ano, Mês, Dia, sep = "-") %>% as.Date()
+  )
+```
+
+Chuvas
+=======================================================================
+
+primeira fileira 
+-----------------------------------------------------------------------
+
+### Precipitação Média (S)
+
+```{r}
+valor <- bd$ChuvaS %>% mean() %>% round(2)
+valueBox(value = valor)
+```
+
+### Precipitação Média (SE)
+
+```{r}
+valor <- bd$ChuvaSE %>% mean() %>% round(2)
+valueBox(value = valor)
+```
+
+### Precipitação Último Mês (S)
+
+```{r}
+bd_aux <- bd_arrumado %>%
+  mutate(
+    ano_mes = floor_date(data, "months")
+  ) %>%
+  filter(ano_mes == max(ano_mes))
+
+valor <- bd_aux$ChuvaS %>% mean() %>% round(2)
+valueBox(value = valor)
+```
+
+### Precipitação Último Mês (SE)
+
+```{r}
+bd_aux <- bd_arrumado %>%
+  mutate(
+    ano_mes = floor_date(data, "months")
+  ) %>%
+  filter(ano_mes == max(ano_mes))
+
+valor <- bd_aux$ChuvaSE %>% mean() %>% round(2)
+valueBox(value = valor)
+```
+
+
+primeira fileira 
+-----------------------------------------------------------------------
+
+### Chuvas SE vs S
+
+```{r, fig.width=7}
+p1 <- bd_arrumado %>%
+  ggplot(aes(x = ChuvaSE, y = ChuvaS)) +
+  geom_point()
+
+plotly::ggplotly(p1)
+```
+
+### Sumário
+
+```{r}
+bd_arrumado %>%
+  gather(regiao, precipitacao, starts_with("Chuva")) %>%
+  group_by(Ano, `Mês`, regiao) %>%
+  summarise(
+    dias = n(),
+    `Média` = mean(precipitacao, na.rm = TRUE) %>% round(2),
+    `Desv.P` = sd(precipitacao, na.rm = TRUE) %>% round(2),
+    `Máx` = max(precipitacao, na.rm = TRUE),
+    `Min` = min(precipitacao, na.rm = TRUE)
+  ) %>%
+  rename(
+    `Região` = regiao
+  ) %>%
+  kable()
+```
+
+
+segunda fileira
+-----------------------------------------------------------------------
+
+### Precipitação no tempo
+
+```{r, fig.width=20}
+p3 <- bd_arrumado %>%
+  gather(regiao, precipitacao, starts_with("Chuva")) %>%
+  ggplot(aes(x = data, y = precipitacao, colour = regiao)) +
+  # geom_smooth(span = 0.3) +
+  # geom_boxplot(aes(group = paste(regiao, floor_date(data, "months"))), alpha = 0.3) +
+  geom_line() +
+  scale_x_date(breaks = "2 months", date_labels = "%y-%b") +
+  theme_minimal(12) +
+  theme(legend.position = "top")
+
+plotly::ggplotly(p3)
+```
+
+> Aqui vai uma descrição sobre o que se observou no gráfico.
+
+ENA
+=======================================================================
+
+primeira fileira 
+-----------------------------------------------------------------------
+
+### ENA Média (S)
+
+```{r}
+valor <- 0
+valueBox(value = valor)
+```
+
+### ENA Média (SE)
+
+```{r}
+
+```
+
+### ENA Último Mês (S)
+
+```{r}
+
+```
+
+### ENA Último Mês (SE)
+
+```{r}
+
+```
+
+segunda fileira
+-----------------------------------------------------------------------
+
+### ENA SE vs S
+
+```{r}
+
+```
+
+### Sumário
+
+```{r}
+
+```
+
+
+terceira fileira 
+-----------------------------------------------------------------------
+
+### ENA no tempo
+
+```{r, fig.width=20}
+
+```
+
+
+Merc+1
+=========================================================================================
+
+- Instruções:
+- 1) Crie uma fileira única
+- 2) Crie um título
+- 3) abaixo do título crie um CHUNK de R 
+- 4) Faça um gráfico do histograma da coluna `Merc+1` usando ggplot2 e geom_histogram()
+
+
+Dados 
+=========================================================================================
+
+fileira unica {.tabset}
+------------------------------------------------------
+
+### Usando kable
+
+```{r}
+bd_arrumado %>% kable()
+```
+
+### Usando DataTable
+
+```{r}
+library(DT)
+bd_arrumado %>% datatable()
+```
