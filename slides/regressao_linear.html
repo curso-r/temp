@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Regressão Linear</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <meta name="date" content="2019-11-05" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link rel="stylesheet" href="css\custom-regressao-linear.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Regressão Linear
+## Teoria e Prática
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>
+### 2019-11-05
+
+---
+
+
+
+
+## Referência
+
+
+&lt;br&gt;
+&lt;center&gt;
+&lt;a href = "https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf"&gt;
+&lt;img src="img/isl.jpg" width = 36%&gt; 
+&lt;/a&gt;
+&lt;/center&gt;
+
+
+
+---
+
+## O que é e quando usar
+
+
+.pull-left[
+
+### Regressão Linear Simples
+
+$$
+y = \beta_0 + \beta_1x
+$$
+
+### Exemplo: 
+
+$$
+dist = \beta_0 + \beta_1speed
+$$
+
+
+]
+
+
+.pull-right[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+]
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
+
+
+---
+
+## O que é e quando usar
+
+
+.pull-left[
+
+### Regressão Linear Simples
+
+$$
+y = \beta_0 + \beta_1x
+$$
+
+### Exemplo: 
+
+$$
+dist = \beta_0 + \beta_1speed
+$$
+
+
+]
+
+
+.pull-right[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+]
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
+
+
+---
+
+## O que é e quando usar
+
+
+.pull-left[
+
+### Regressão Linear Simples
+
+$$
+y = \beta_0 + \beta_1x
+$$
+
+### Exemplo: 
+
+$$
+dist = \beta_0 + \beta_1speed
+$$
+
+
+]
+
+
+.pull-right[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+]
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
+
+---
+
+## O que é e quando usar
+
+
+.pull-left[
+
+### Regressão Linear Simples
+
+$$
+y = \beta_0 + \beta_1x
+$$
+
+]
+
+
+.pull-right[
+
+
+]
+
+
+```r
+# ajuste de uma regressão linear simples no R
+*melhor_reta &lt;- lm(dist ~ speed, data = cars)
+melhor_reta
+```
+
+```
+## 
+## Call:
+## lm(formula = dist ~ speed, data = cars)
+## 
+## Coefficients:
+## (Intercept)        speed  
+##     -17.579        3.932
+```
+
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
+---
+
+## "Melhor Reta" segundo o quê?
+
+Queremos a reta que **erre menos**.
+
+Uma medida de erro: **E**rro **Q**uadrático **M**édio.
+
+$$
+EQM = \frac{1}{N}\sum(y_i - \hat{y_i})^2
+$$
+
+![](regressao_linear_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+
+
+
+---
+
+## "Melhor Reta" segundo o quê?
+
+Queremos a reta que **erre menos**.
+
+Uma medida de erro: **E**rro **Q**uadrático **M**édio.
+
+$$
+EQM = \frac{1}{N}\sum(y_i - \hat{y_i})^2
+$$
+
+Ou seja, nosso **objetivo** é
+
+## Encontrar `\(\hat{\beta}_0\)` e `\(\hat{\beta}_1\)` que nos retorne o ~menor~ EQM.
+
+--
+
+... que é o mesmo que dizer "encontrar a melhor reta que explique os dados".
+
+OBS: o EQM é a nossa **Função de Custo**.
+
+---
+
+## Qual o valor ótimo para `\(\beta_0\)` e `\(\beta_1\)`?
+
+No nosso exemplo, a nossa **HIPÓTESE** é de que 
+
+$$
+dist = \beta_0 + \beta_1speed
+$$
+
+Então podemos escrever o Erro Quadrático Médio como
+
+$$
+EQM = \frac{1}{N}\sum(y_i - \hat{y_i})^2 = \frac{1}{N}\sum(y_i -  \color{red}{(\hat{\beta}_0 + \hat{\beta}_1speed)})^2 
+$$
+
+Com ajuda do Cálculo é possível mostrar que os valores ótimos para `\(\beta_0\)` e `\(\beta_1\)` são
+
+`\(\hat{\beta}_1 = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}\)`
+
+`\(\hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x}\)`
+
+Já que vieram do EQM, eles são chamados de **Estimadores de Mínimos Quadrados**.
+
+
+```r
+# lembrete: exercício 2 do script!
+```
+
+
+
+---
+
+## Depois de estimar...
+
+$$
+\hat{y} = \hat{\beta}_0 + \hat{\beta}_1x
+$$
+
+### Exemplo:
+
+$$
+\hat{dist} = \hat{\beta}_0 + \hat{\beta}_1speed
+$$
+
+Colocamos um `\(\hat{}\)` em cima dos termos para representar "estimativas". Ou seja, `\(\hat{y}_i\)` é uma estimativa de `\(y_i\)`.
+
+No nosso exemplo, 
+
+- `\(\hat{\beta}_0\)` é uma estimativa de `\(\beta_0\)` e vale `-17.579`.
+- `\(\hat{\beta}_1\)` é uma estimativa de `\(\beta_1\)` e vale `3.932`.
+- `\(\hat{dist}\)` é uma estimativa de `\(dist\)` e vale `-17.579 + 3.932 x speed`.
+
+
+```r
+# Exercício: se speed for 15 m/h, quanto que 
+# seria a distância dist esperada?
+```
+
+---
+
+## Teste de Hipóteses e valor-p
+
+Exemplo: relação entre População Urbana e Assassinatos.
+
+.pull-left[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+Modelo proposto: 
+
+`$$y = \beta_0 + \beta_1 x$$`
+
+]
+
+.pull-right[
+
+Hipótese do pesquisador: 
+&gt; "Assassinatos não estão relacionados com a proporção de população urbana de uma cidade."
+
+Tradução da hipótese em termos matemáticos:
+
+$$
+H_0: \beta_1 = 0 \space\space\space\space\space vs \space\space\space\space H_a: \beta_1 \neq 0
+$$
+Se a hipótese for verdade, então o `\(\beta_1\)` deveria ser zero. Porém, os dados disseram que `\(\hat{\beta}_1 = 0.02\)`. 
+
+### 0.02 é diferente de 0.00? 
+
+]
+
+
+
+---
+
+## 0.02 é diferente de 0.00? 
+
+### Saída do R
+
+
+```
+## 
+## Call:
+## lm(formula = Murder ~ UrbanPop, data = USArrests)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -6.537 -3.736 -0.779  3.332  9.728 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  6.41594    2.90669   2.207   0.0321 *
+*## UrbanPop     0.02093    0.04333   0.483   0.6312  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.39 on 48 degrees of freedom
+## Multiple R-squared:  0.00484,	Adjusted R-squared:  -0.01589 
+## F-statistic: 0.2335 on 1 and 48 DF,  p-value: 0.6312
+```
+
+
+
+---
+
+## 0.02 é diferente de 0.00? 
+
+Conceito importante: Os estimadores ( `\(\hat{\beta}_0\)` e `\(\hat{\beta}_1\)` no nosso caso) têm distribuições de probabilidade.
+
+### Simulação de 1000 retas (ajustadas com dados diferentes).
+
+![distrib_params](img/combined_gif.gif)
+
+
+---
+
+## 0.02 é diferente de 0.00? 
+
+Conceito importante: Os estimadores ( `\(\hat{\beta}_0\)` e `\(\hat{\beta}_1\)` no nosso caso) têm distribuições de probabilidade.
+
+### A Teoria Assintótica nos fornece o seguinte resultado:
+
+
+.pull-left[
+
+`\(t = \frac{\hat{\beta_1} - \beta_1}{\hat{\sigma}_{\beta_1}} \overset{\text{a}}{\sim}  t(N - 2)\)`
+
+#### Em que
+
+`\(\hat{\sigma}_{\beta_1} = \sqrt{\frac{EQM}{\sum(x_i - \bar{x})^2}}\)`
+
+
+Usamos essas distribuições assintóticas para testar as hipóteses.
+
+]
+
+.pull-right[
+
+&lt;div style="width:200px; height:100px"&gt;
+&lt;img src="img/dnorm_params.png"&gt;
+&lt;/div&gt;
+
+]
+
+
+---
+
+
+## 0.02 é diferente de 0.00? 
+
+Conceito importante: Os estimadores ( `\(\hat{\beta}_0\)` e `\(\hat{\beta}_1\)` no nosso caso) têm distribuições de probabilidade.
+
+### A Teoria Assintótica nos fornece o seguinte resultado:
+
+
+.pull-left[
+
+
+`\(t = \frac{\hat{\beta_1} - \beta_1}{\hat{\sigma}_{\beta_1}} \overset{\text{a}}{\sim}  t(N - 2)\)`
+
+#### Em que
+
+`\(\hat{\sigma}_{\beta_1} = \sqrt{\frac{EQM}{\sum(x_i - \bar{x})^2}}\)`
+
+Usamos essas distribuições assintóticas para testar as hipóteses.
+
+]
+
+.pull-right[
+
+No nosso exemplo, a hipótese é `\(H_0: \beta_1 = 0\)`, então 
+
+`$$t = \frac{0.02 - 0}{0.04} = 0.48$$`
+
+![distrib_params](img/teste_t.png)
+
+]
+
+
+
+---
+
+## 0.02 é diferente de 0.00? 
+
+Então agora podemos tomar decisão! Se a estimativa cair muito distante da distribuição t da hipótese 0, decidimos por **rejeitá-la**. Caso contrário, decidimos por **aceitá-la** como verdade.
+
+![testes_t_estrelas](img/testes_t_estrelas.png)
+
+
+```
+## NO R:
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  6.41594    2.90669   2.207   0.0321 *
+## UrbanPop     0.02093    0.04333   0.483   0.6312  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## Interpretação dos parâmetros
+
+.pull-left[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+$$
+y = \color{darkgblue}{\beta_0} + \color{darkgreen}{\beta_1}x
+$$
+
+]
+
+.pull-right[
+
+### Interpretações matemáticas
+
+`\(\color{darkgblue}{\beta_0}\)` é o lugar em que a reta cruza o eixo Y.
+
+`\(\color{darkgreen}{\beta_1}\)` é a derivada de Y em relação ao X. É quanto Y varia quando X varia em 1 unidade.
+
+### Interpretações estatísticas
+
+`\(\color{darkgblue}{\beta_0}\)` é a distância percorrida esperada quando o carro está parado (X = 0).
+
+`\(\color{darkgreen}{\beta_1}\)` é o efeito médio na distância por variar 1 ml/h na velocidade do carro.
+
+
+]
+
+
+
+---
+
+## Teste de Hipóteses e valor-p 
+
+### Exercício 3 do script: 
+
+No R, use a função `summary(melhor_reta)` (ver slide 5) para decidir se `speed` está associado com `dist`. Descubra o valor-p associado.
+
+lembrete: o banco de dados se chama `cars`.
+
+### Exercício 4 do script: 
+
+Interprete o parâmetro `\(\beta_1\)`.
+
+---
+
+## O modelo está bom?
+
+### EQM e EPR
+
+ERP significa *E*rro *P*adrão dos *R*esíduos e é definido como 
+
+$$
+EPR = \frac{\sum(y_i - \hat{y_i})^2}{N - 2} = \frac{SQR}{N - 2}
+$$
+O **2** no denominador decorre do fato de termos **2 parâmetros** para estimar no modelo.
+
+- Se `\(y_i = \hat{y}_i \space\space\space \rightarrow \color{green}{EPR = 0 \downarrow}\)`
+- Se `\(y_i &gt;&gt; \hat{y}_i \rightarrow \color{red}{EPR = alto \uparrow}\)`
+- Se `\(y_i &lt;&lt; \hat{y}_i \rightarrow \color{red}{EPR = alto \uparrow}\)`
+
+
+Problema: Como sabemos se o EPR é grande ou pequeno?
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 68 (Assessing the Accuracy of the Model).
+
+]
+
+
+---
+
+## O modelo está bom?
+
+### R-quadrado ( `\(R^2\)` )
+
+$$
+R^2 = 1 - \frac{\sum(y_i - \color{salmon}{\hat{y_i}})^2}{\sum(y_i - \color{royalblue}{\bar{y}})^2} = 1 - \frac{\color{salmon}{SQR}}{\color{royalblue}{SQT}}
+$$
+
+.pull-left[
+
+&lt;img src="regressao_linear_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+`\(R^2 \approx 1 \rightarrow \color{salmon}{SQR} &lt;&lt; \color{royalblue}{SQT}\)`.
+`\(R^2 \approx 0 \rightarrow \color{salmon}{reta} \text{ em cima da } \color{royalblue}{reta}\)`.
+
+Problema do `\(R^2\)` é que ele sempre aumenta conforme novos preditores vão sendo incluídos.
+
+]
+
+
+
+
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 68 (Assessing the Accuracy of the Model).
+]
+
+---
+
+## O modelo está bom?
+
+### R-quadrado ajustado
+
+$$
+R^2 = 1 - \frac{\color{salmon}{SQR}}{\color{royalblue}{SQT}}\frac{\color{royalblue}{N-1}}{\color{salmon}{N-p}}
+$$
+
+Em que `\(p\)` é o número de parâmetros do modelo (no caso da regressão linear simples, `\(p = 2\)`).
+
+
+```r
+# lembrete: exercícios 5 e 6 do script!
+```
+
+---
+
+## Outliers
+
+&lt;img src="regressao_linear_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+Resíduo = `\(y_i - \hat{y}_i\)` (observado - esperado).
+
+
+```r
+# lembrete: faça o exercício 7 do script
+```
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 96 (Outliers).
+]
+
+---
+
+## Regressão Linear Múltipla
+
+### Regressão Linear Simples
+
+$$
+y = \beta_0 + \beta_1x
+$$
+
+### Regressão Linear Múltipla
+
+$$
+y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \dots + \beta_px_p
+$$
+
+
+```r
+# ajuste de uma regressão linear múltipla no R
+*modelo_boston &lt;- lm(medv ~ lstat + age, data = Boston)
+summary(modelo_boston)
+#             Estimate Std.Error t value Pr(&gt;|t|)    
+# (Intercept) 33.22    0.73      45.4    &lt; 2e-16 ***
+# lstat       -1.03    0.04     -21.4    &lt; 2e-16 ***
+# age          0.03    0.01       2.8    0.00491 ** 
+```
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 71 (Multiple Linear Regression).
+]
+
+
+---
+
+## Regressão Linear Múltipla
+
+### Exemplo: Plano em vez de reta
+
+Modelo: `lm(mpg ~ disp + wt, data = mtcars)`
+
+&lt;img src="regressao_linear_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+Fonte: [sthda.com/impressive-package-for-3d](http://www.sthda.com/english/wiki/impressive-package-for-3d-and-4d-graph-r-software-and-data-visualization)
+]
+
+---
+
+## Preditores Categóricos
+
+### Preditor com apenas 2 categorias
+
+Saldo médio no cartão de crédito é diferente entre homens e mulheres?
+
+![](regressao_linear_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+
+```r
+summary(lm(Balance ~ Gender, data = Credit))
+# Coefficients:
+#              Estimate  Std.Error  t value Pr(&gt;|t|)    
+# (Intercept)    509.80  33.13      15.389   &lt;2e-16 ***
+# GenderFemale    19.73  46.05       0.429    0.669   
+```
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 84 (Predictors with Only Two Levels).
+]
+
+
+---
+
+## Preditores Categóricos
+
+### Preditor com apenas 2 categorias
+
+Saldo médio no cartão de crédito é diferente entre homens e mulheres?
+
+![](regressao_linear_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+
+$$
+y_i = \beta_0 + \beta_1x_i \space\space\space\space\space\space \text{em que}\space\space\space\space\space\space x_i = \Bigg\\{\begin{array}{ll}1&amp;\text{se a i-ésima pessoa for }\texttt{female}\\\\
+0&amp;\text{se a i-ésima pessoa for } \texttt{male}\end{array}
+$$
+
+
+```r
+# lembrete: exercícios 8 e 9 do script!
+```
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 84 (Predictors with Only Two Levels).
+]
+
+
+---
+
+## Preditores Categóricos
+
+### Preditor com 3 ou mais categorias
+
+.pull-left[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+
+
+```r
+summary(lm(Balance ~ Ethnicity, data = Credit))
+#                    Estimate  Std.Error t value Pr(&gt;|t|)    
+# (Intercept)          531.00  46.32     11.464   &lt;2e-16 ***
+# EthnicityAsian       -18.69  65.02     -0.287    0.774    
+# EthnicityCaucasian   -12.50  56.68     -0.221    0.826  
+```
+
+
+]
+
+.pull-right[
+
+Modelo
+
+`$$y_i = \beta_0 + \beta_1x_{1i} + \beta_2x_{2i}$$`
+
+Em que
+
+
+`\(x_{1i} = \Bigg \{ \begin{array}{ll} 1 &amp; \text{se for }\texttt{Asian}\\0&amp;\text{caso contrário}\end{array}\)`
+      
+`\(x_{2i} = \Bigg \{ \begin{array}{ll} 1 &amp; \text{se for }\texttt{Caucasian}\\0&amp;\text{caso contrário}\end{array}\)`
+
+]
+
+
+---
+
+## Preditores Categóricos
+
+### Preditor com 3 ou mais categorias
+
+"One hot enconding" ou "Dummies" ou "Indicadores".
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Ethnicity &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; (Intercept) &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; EthnicityAsian &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; EthnicityCaucasian &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Caucasian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Caucasian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Caucasian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; African American &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+```r
+# lembrete: exercício 10 do script!
+```
+
+---
+
+## Preditores Categóricos
+
+### Preditor com 3 ou mais categorias
+
+Interpretação dos parâmetros:
+
+`\(y_{i} = \left\{ \begin{array}{ll} \beta_0 &amp; \text{se for }\texttt{Afro American}\\ \beta_0 + \beta_1&amp;\text{se for } \texttt{Asian}\\ \beta_0 + \beta_2&amp;\text{se for } \texttt{Caucasian}\end{array}\right.\)`
+
+
+```r
+# interprete cada um dos três parâmetros individualmente.
+# lembrete: exercícios 10 e 11 do script!
+```
+
+
+---
+
+## Transformações Não Lineares dos Preditores
+
+### Exemplo: log
+
+.pull-left[
+Modelo real: `\(y = 10 + 0.5log(x)\)` 
+]
+
+.pull-right[
+Modelo proposto: `\(\small y = \beta_0 + \beta_1log(x)\)` 
+]
+
+
+&lt;img src="regressao_linear_files/figure-html/unnamed-chunk-28-1.png" style="display: block; margin: auto;" /&gt;
+
+Outras transformações comuns: raíz quadrada, polinômios, Box-Cox, ...
+
+
+```r
+# lembrete: exercício 12 do script!
+```
+
+
+---
+
+## Transformações Não Lineares dos Preditores
+
+### Exemplo: Regressão Polinomial
+
+.pull-left[
+Modelo real: `\(y = 500 + 0.4(x-10)^3\)` 
+]
+
+.pull-right[
+Modelo proposto: `\(y = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3\)` 
+]
+
+
+![](regressao_linear_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+
+```r
+# lembrete: exercício 13 do script!
+```
+
+---
+
+## Interações
+
+Modelo proposto (Matemático): Seja `Sepal.Width` o `\(y\)` e `Sepal.Length` o `\(x\)`,
+
+`$$\small \begin{array}{l} y = \beta_0 + \beta_1x + \beta_2I_{versicolor} + \beta_3I_{virginica} + \beta_4\color{red}{xI_{versicolor}} + \beta_5\color{red}{xI_{virginica}}\end{array}$$`
+
+
+&lt;img src="regressao_linear_files/figure-html/unnamed-chunk-32-1.png" height="260" style="display: block; margin: auto;" /&gt;
+
+
+Modelo proposto (em R): `Sepal.Width ~ Sepal.Length * Species`
+
+
+```r
+# lembrete: exercícios 14 ao 17 do script!
+```
+
+
+---
+
+## Multicolinearidade
+
+.pull-left[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+Modelo 1: sem colineares
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -173.41 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: black !important;padding-right: 4px; padding-left: 4px; background-color: white !important;text-align: r;"&gt;43.83&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.96 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Limit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: white !important;padding-right: 4px; padding-left: 4px; background-color: darkred !important;text-align: r;"&gt;0.01&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34.50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Age &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.29 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: black !important;padding-right: 4px; padding-left: 4px; background-color: white !important;text-align: r;"&gt;0.67&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.41 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Modelo 2: com colineares
+
+&lt;table class="table" style="font-size: 13px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -377.54 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: black !important;padding-right: 4px; padding-left: 4px; background-color: white !important;text-align: r;"&gt;45.25&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -8.34 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Limit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: white !important;padding-right: 4px; padding-left: 4px; background-color: darkred !important;text-align: r;"&gt;0.06&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.38 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Rating &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.20 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style="     color: black !important;padding-right: 4px; padding-left: 4px; background-color: white !important;text-align: r;"&gt;0.95&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+Problema: Instabilidade numérica, desvios padrão inflados e interpretação comprometida.
+
+Soluções: eliminar uma das variáveis muito correlacionadas ou Consultar o VIF (Variance Inflation Factor)
+
+---
+
+## Multicolinearidade
+
+### VIF (Variance Inflation Factor)
+
+Detecta preditores que são combinações lineares de outros preditores.
+
+
+**Procedimento:** Para cada preditor `\(X_j\)`,
+
+1) Ajusta regressão linear com as demais: `lm(X_j ~ X_1 + ... + X_p)`.
+
+2) Calcula-se o R-quadrado dessa regressão e aplica a fórmula abaixo
+
+`$$\small VIF(\hat{\beta}_j) = \frac{1}{1 - R^2_{X_j|X_{-j}}}$$`
+
+3) Remova o preditor se VIF maior que 5 (regra de bolso).
+
+
+```r
+# lembrete: exercícios 18 do script!
+```
+
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 101.
+]
+
+
+---
+
+## Fazendo Predições
+
+### Modelo
+
+
+```r
+modelo_iris &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
+```
+
+Suponha que dados novos chegaram:
+
+
+```r
+dados_novos &lt;- tibble(Sepal.Length = 10, Species = "setosa")
+```
+
+
+### Utilizando a função `augment()` do pacote `broom`
+
+
+```r
+augment(modelo_iris, newdata = dados_novos)
+##   Sepal.Length Species .fitted .se.fit
+## 1           10 setosa     7.42   0.553
+```
+
+O valor estimado de `Sepal.Width` foi de `7.42` +/- `0.55`.
+
+
+---
+
+## Fazendo Predições
+
+### Modelo
+
+
+```r
+modelo_iris &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
+```
+
+Suponha que dados novos chegaram:
+
+
+```r
+dados_novos &lt;- data.frame(Sepal.Length = 10, Species = "setosa")
+```
+
+
+### Utilizando a função `predict()`
+
+
+```r
+dados_novos %&gt;% 
+  mutate(S.W.Est = predict(modelo_iris, newdata = dados_novos))
+##  Sepal.Length Species S.W.Est
+##            10 setosa     7.42
+```
+
+
+---
+
+## Interpretabilidade da Predição
+
+### LIME: Local Interpretable Model-agnostic Explanations
+
+
+
+
+
+```r
+# fazendo lm com caret::train() pq o lime soh aceita caret
+modelo_iris &lt;- train(Sepal.Width ~ Sepal.Length * Species, data = iris, method = "lm")
+explicador &lt;- lime(iris, modelo_iris)
+explicacoes &lt;- lime::explain(dados_novos, explicador, n_features = 2)
+plot_features(explicacoes) 
+```
+
+.pull-left[
+
+
+```r
+# lembrete: exercícios 19 
+# do script!
+```
+
+]
+
+.pull-right[
+
+![](regressao_linear_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+
+]
+
+
+.footnote[
+Ver [LIME for R](https://github.com/thomasp85/lime) página 101.
+]
+
+
+---
+
+## (Opcional) Abordagem Probabilística
+
+Do ponto de vista probabilístico, modela-se o problema como uma amostra de N indivíduos, todos independentes entre si e com distribuição Normal.
+
+$$
+Y_i|x_i \sim N(\mu_i, \sigma^2), \space i = 1, \dots, N
+$$
+
+E então, supõem que a média de `\(Y\)` dado o valor de `\(x\)` seja linear:
+
+$$
+\mu = E[Y|x] = \beta_0 + \beta_1x
+$$
+
+Assim, gostaríamos de achar `\(\beta_0\)` e `\(\beta_1\)` que fizessem dessa amostra a mais verossímil possível. 
+
+Daí entra o conceito de verossimilhança, que é a probabilidade conjunta dos dados acontecerem:
+
+$$
+P(Y_1, \dots, Y_N|x) \overset{\text{indep}}{=} P(Y_1|x_1)P(Y_2|x_2)\dots P(Y_N|x_N)
+$$
+
+continua...
+
+
+---
+
+## (Opcional) Abordagem Probabilística
+
+Se tirarmos o `\(logarítmo\)` dessa probabilidade conjunta, teremos:
+
+$$
+logP(Y_1, \dots, Y_N|x) \overset{\text{indep}}{=} logP(Y_i|x_1) + log P(Y_2|x_2) +\dots +logP(Y_N|x_N)
+$$
+
+Que podemos escrever de forma mais sussinta usando um somatório:
+
+$$
+\ell = logP(Y_1, \dots, Y_N|x) = \sum_{i = 1}^{N}logP(Y_i|x_i)
+$$
+
+Essa expressão que chamamos de `\(\ell\)` é conhecida como log-verossimilhança (log-likelihood no inglês).
+
+continua...
+
+
+---
+
+## (Opcional) Abordagem Probabilística
+
+Já que assumimos que `\(Y_i|x_i\)` segue uma distribuição `\(N(\beta_0 + \beta_1x_i, \sigma^2)\)`, temos que:
+
+$$
+\ell =  \sum_{i = 1}^{N}log\left(\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left[-\frac{1}{2\sigma^2}(y_i - \mu_i)^2 \right] \right)
+$$
+
+Que depois de simplificar (e deixando as constantes de fora), fica
+
+$$
+\ell = -\frac{1}{N}\sum(y_i - \mu_i)^2 = -\frac{1}{N}\sum(y_i -  \color{red}{(\beta_0 + \beta_1speed)})^2 = -EQM
+$$
+
+Ou seja, maximizar a verossimilhança é equivalente a minimizar o EQM como vínhamos fazendo.
+
+---
+
+## Questões importantes
+
+Questões que usualmente estamos interessados quando ajustamos uma regressão linear.
+
+- Pelo menos um dos preditores  `\(X1, X2,\dots,X_p\)` é útil para prever/explicar?
+
+- Todos os preditores são úteis ou apenas um subconjunto deles que é?
+
+- O quão bem o modelo se ajusta aos dados?
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 75 (Some Important Questions).
+]
+
+---
+
+## Sobreajuste (overfiting)
+
+a fazer
+
+---
+
+## Regularização
+
+a fazer
+
+---
+
+## LASSO e Seleção de Preditores
+
+a fazer
+
+---
+
+## Validação Cruzada
+
+a fazer
+
+
+---
+
+## Limitações da Regressão Linear
+
+- Variável resposta Não Normal
+- Variável resposta Positiva
+- Variável resposta Categórica
+- Relação funcional não linear entre X e Y
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
