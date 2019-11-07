@@ -4,7 +4,7 @@
     <title>Regressão Linear</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2019-11-05" />
+    <meta name="date" content="2019-11-07" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
@@ -17,7 +17,7 @@ class: center, middle, inverse, title-slide
 # Regressão Linear
 ## Teoria e Prática
 ### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '20%'>
-### 2019-11-05
+### 2019-11-07
 
 ---
 
@@ -716,7 +716,7 @@ Em que
 
 
 `\(x_{1i} = \Bigg \{ \begin{array}{ll} 1 &amp; \text{se for }\texttt{Asian}\\0&amp;\text{caso contrário}\end{array}\)`
-      
+
 `\(x_{2i} = \Bigg \{ \begin{array}{ll} 1 &amp; \text{se for }\texttt{Caucasian}\\0&amp;\text{caso contrário}\end{array}\)`
 
 ]
@@ -1143,9 +1143,7 @@ $$
 
 Que podemos escrever de forma mais sussinta usando um somatório:
 
-$$
-\ell = logP(Y_1, \dots, Y_N|x) = \sum_{i = 1}^{N}logP(Y_i|x_i)
-$$
+`$$\ell = logP(Y_1, \dots, Y_N|x) = \sum_{i = 1}^{N}logP(Y_i|x_i)$$`
 
 Essa expressão que chamamos de `\(\ell\)` é conhecida como log-verossimilhança (log-likelihood no inglês).
 
@@ -1164,9 +1162,7 @@ $$
 
 Que depois de simplificar (e deixando as constantes de fora), fica
 
-$$
-\ell = -\frac{1}{N}\sum(y_i - \mu_i)^2 = -\frac{1}{N}\sum(y_i -  \color{red}{(\beta_0 + \beta_1speed)})^2 = -EQM
-$$
+`$$\ell = -\frac{1}{N}\sum(y_i - \mu_i)^2 = -\frac{1}{N}\sum(y_i -  \color{red}{(\beta_0 + \beta_1speed)})^2 = -EQM$$`
 
 Ou seja, maximizar a verossimilhança é equivalente a minimizar o EQM como vínhamos fazendo.
 
@@ -1186,30 +1182,173 @@ Questões que usualmente estamos interessados quando ajustamos uma regressão li
 Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 75 (Some Important Questions).
 ]
 
+
 ---
 
-## Sobreajuste (overfiting)
+## Sobreajuste (overfitting)
 
-a fazer
+Modelo real é de **grau 3**
+
+![distrib_params](img/overfiting_sem_teste.gif)
+
+---
+
+## Sobreajuste (overfitting)
+
+Modelo real é de **grau 3**
+
+![distrib_params](img/overfiting_com_teste.gif)
+
+---
+
+## Sobreajuste (overfitting)
+
+Modelo real é de **grau 3**
+
+![scatter_eqm](img/overfiting_scatter_eqm.gif)
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
 
 ---
 
 ## Regularização
 
-a fazer
+Relembrando o nossa **função de custo** EQM.
+
+`$$EQM = \frac{1}{N}\sum(y_i - \hat{y_i})^2 = \frac{1}{N}\sum(y_i -  \color{red}{(\hat{\beta}_0 + \hat{\beta}_1x_{1i} + \dots + \hat{\beta}_px_{pi})})^2$$`
+
+Regularizar é "não deixar os `\(\beta's\)` soltos demais".
+
+`$$EQM_{regularizado} = EQM + \color{red}{\lambda}\sum_{j = 1}^{p}|\beta_j|$$`
+
+Ou seja, **penalizamos** a função de custo se os `\(\beta's\)` forem muito grandes.
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 203 (Linear Model Selection and Regularization).
+]
+
 
 ---
 
 ## LASSO e Seleção de Preditores
 
-a fazer
+Conforme aumentamos o `\(\color{red}{\lambda}\)`, forçamos os `\(\beta's\)` a serem cada vez menores.
+
+
+![scatter_eqm](img/lasso_lambda.png)
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 219 (The LASSO).
+]
+
+
+---
+
+## LASSO e Seleção de Preditores
+
+Conforme aumentamos o `\(\lambda\)`, forçamos os `\(\beta's\)` a serem cada vez menores.
+
+
+![scatter_eqm](img/betas.png)
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 219 (The LASSO).
+]
 
 ---
 
 ## Validação Cruzada
 
-a fazer
 
+```
+## #  5-fold cross-validation 
+## # A tibble: 5 x 6
+##   splits          id    n_treino n_teste regressao    eqm_teste
+## * &lt;named list&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;named list&gt;     &lt;dbl&gt;
+## 1 &lt;split [40/10]&gt; Fold1       40      10 &lt;lm&gt;              11.9
+## 2 &lt;split [40/10]&gt; Fold2       40      10 &lt;lm&gt;              15.0
+## 3 &lt;split [40/10]&gt; Fold3       40      10 &lt;lm&gt;              18.2
+## 4 &lt;split [40/10]&gt; Fold4       40      10 &lt;lm&gt;              21.0
+## 5 &lt;split [40/10]&gt; Fold5       40      10 &lt;lm&gt;              11.0
+```
+
+
+```
+## [1] 15.426
+```
+
+
+ERRO DE VALIDAÇÃO CRUZADA: `$$EQM_{cv} = \frac{1}{10}\sum_{i=1}^{10}EQM_{Fold_i} = 14,671$$`
+
+---
+
+## Validação Cruzada
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; fold &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; speed &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; dist &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #F8766D !important;"&gt; fold 1 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #F8766D !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #F8766D !important;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #F8766D !important;"&gt; fold 1 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #F8766D !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #F8766D !important;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #D39200 !important;"&gt; fold 2 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #D39200 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #D39200 !important;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #D39200 !important;"&gt; fold 2 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #D39200 !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #D39200 !important;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #93AA00 !important;"&gt; fold 3 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #93AA00 !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #93AA00 !important;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #93AA00 !important;"&gt; fold 3 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #93AA00 !important;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #93AA00 !important;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #00BA38 !important;"&gt; fold 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00BA38 !important;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00BA38 !important;"&gt; 18 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #00BA38 !important;"&gt; fold 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00BA38 !important;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00BA38 !important;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #00C19F !important;"&gt; fold 5 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00C19F !important;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00C19F !important;"&gt; 34 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: #00C19F !important;"&gt; fold 5 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00C19F !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: #00C19F !important;"&gt; 17 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ---
 
@@ -1219,6 +1358,7 @@ a fazer
 - Variável resposta Positiva
 - Variável resposta Categórica
 - Relação funcional não linear entre X e Y
+- Muitas interações para testar entre as preditoras
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

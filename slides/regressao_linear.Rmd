@@ -752,10 +752,10 @@ z.pred <- matrix(predict(fit, newdata = xy),
 fitpoints <- predict(fit)
 # scatter plot with regression plane
 scatter3D(x, y, z, pch = 18, cex = 2, 
-    theta = 20, phi = 20, ticktype = "detailed",
-    xlab = "wt", ylab = "disp", zlab = "mpg",  
-    surf = list(x = x.pred, y = y.pred, z = z.pred,  
-    facets = NA, fit = fitpoints))
+          theta = 20, phi = 20, ticktype = "detailed",
+          xlab = "wt", ylab = "disp", zlab = "mpg",  
+          surf = list(x = x.pred, y = y.pred, z = z.pred,  
+                      facets = NA, fit = fitpoints))
 ```
 
 .footnote[
@@ -863,7 +863,7 @@ Em que
 
 
 $x_{1i} = \Bigg \{ \begin{array}{ll} 1 & \text{se for }\texttt{Asian}\\0&\text{caso contrário}\end{array}$
-      
+
 $x_{2i} = \Bigg \{ \begin{array}{ll} 1 & \text{se for }\texttt{Caucasian}\\0&\text{caso contrário}\end{array}$
 
 ]
@@ -926,8 +926,8 @@ y_x <- tibble(
 grafico_y_x <- y_x %>%
   ggplot(aes(x = x, y = y)) + 
   geom_point( size = 3) 
-  
-  
+
+
 grafico_y_x_curvas <- grafico_y_x +
   geom_smooth(aes(colour = "y ~ x"), method = "lm", se = FALSE, formula = y ~ x) +
   geom_smooth(aes(colour = "y ~ log(x)"), method = "lm", se = FALSE, formula = y ~ log(x)) +
@@ -1050,7 +1050,7 @@ tidy(modelo_multicolinearidade1) %>%
 Modelo 2: com colineares
 
 ```{r}
-  tidy(modelo_multicolinearidade2) %>%
+tidy(modelo_multicolinearidade2) %>%
   mutate_if(is.numeric, round, digits = 2) %>%
   mutate(
     std.error = kableExtra::cell_spec(std.error, "html", background_as_tile = FALSE, color = ifelse(term == "Limit", "white", "black"), background = ifelse(term == "Limit", "darkred", "white"), align = "r")
@@ -1237,9 +1237,7 @@ $$
 
 Que podemos escrever de forma mais sussinta usando um somatório:
 
-$$
-\ell = logP(Y_1, \dots, Y_N|x) = \sum_{i = 1}^{N}logP(Y_i|x_i)
-$$
+$$\ell = logP(Y_1, \dots, Y_N|x) = \sum_{i = 1}^{N}logP(Y_i|x_i)$$
 
 Essa expressão que chamamos de $\ell$ é conhecida como log-verossimilhança (log-likelihood no inglês).
 
@@ -1258,9 +1256,7 @@ $$
 
 Que depois de simplificar (e deixando as constantes de fora), fica
 
-$$
-\ell = -\frac{1}{N}\sum(y_i - \mu_i)^2 = -\frac{1}{N}\sum(y_i -  \color{red}{(\beta_0 + \beta_1speed)})^2 = -EQM
-$$
+$$\ell = -\frac{1}{N}\sum(y_i - \mu_i)^2 = -\frac{1}{N}\sum(y_i -  \color{red}{(\beta_0 + \beta_1speed)})^2 = -EQM$$
 
 Ou seja, maximizar a verossimilhança é equivalente a minimizar o EQM como vínhamos fazendo.
 
@@ -1280,30 +1276,131 @@ Questões que usualmente estamos interessados quando ajustamos uma regressão li
 Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 75 (Some Important Questions).
 ]
 
+
 ---
 
-## Sobreajuste (overfiting)
+## Sobreajuste (overfitting)
 
-a fazer
+Modelo real é de **grau 3**
+
+![distrib_params](img/overfiting_sem_teste.gif)
+
+---
+
+## Sobreajuste (overfitting)
+
+Modelo real é de **grau 3**
+
+![distrib_params](img/overfiting_com_teste.gif)
+
+---
+
+## Sobreajuste (overfitting)
+
+Modelo real é de **grau 3**
+
+![scatter_eqm](img/overfiting_scatter_eqm.gif)
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 61 (Simple Linear Regression).
+]
+
 
 ---
 
 ## Regularização
 
-a fazer
+Relembrando o nossa **função de custo** EQM.
+
+$$EQM = \frac{1}{N}\sum(y_i - \hat{y_i})^2 = \frac{1}{N}\sum(y_i -  \color{red}{(\hat{\beta}_0 + \hat{\beta}_1x_{1i} + \dots + \hat{\beta}_px_{pi})})^2$$
+
+Regularizar é "não deixar os $\beta's$ soltos demais".
+
+$$EQM_{regularizado} = EQM + \color{red}{\lambda}\sum_{j = 1}^{p}|\beta_j|$$
+
+Ou seja, **penalizamos** a função de custo se os $\beta's$ forem muito grandes.
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 203 (Linear Model Selection and Regularization).
+]
+
 
 ---
 
 ## LASSO e Seleção de Preditores
 
-a fazer
+Conforme aumentamos o $\color{red}{\lambda}$, forçamos os $\beta's$ a serem cada vez menores.
+
+
+![scatter_eqm](img/lasso_lambda.png)
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 219 (The LASSO).
+]
+
+
+---
+
+## LASSO e Seleção de Preditores
+
+Conforme aumentamos o $\lambda$, forçamos os $\beta's$ a serem cada vez menores.
+
+
+![scatter_eqm](img/betas.png)
+
+
+.footnote[
+Ver [ISL](https://www.ime.unicamp.br/~dias/Intoduction%20to%20Statistical%20Learning.pdf) página 219 (The LASSO).
+]
 
 ---
 
 ## Validação Cruzada
 
-a fazer
+```{r}
+library(rsample)
+cars_cv <- rsample::vfold_cv(cars, v = 5) %>%
+  mutate(
+    n_treino = map_dbl(splits, ~nrow(as.data.frame(.x))),
+    n_teste = map_dbl(splits, ~nrow(assessment(.x))),
+    regressao = map(splits, ~lm(dist ~ speed, data = .x)),
+    eqm_teste = map2_dbl(regressao, splits, ~ {
+      df <- rsample::assessment(.y) %>%
+        mutate(pred = predict(.x, newdata = rsample::assessment(.y)))
+      
+      round(sqrt(mean((df$dist - df$pred)^2)), 2)
+    })
+  )
+cars_cv
+```
 
+```{r}
+mean(cars_cv$eqm_teste)
+```
+
+
+ERRO DE VALIDAÇÃO CRUZADA: $$EQM_{cv} = \frac{1}{10}\sum_{i=1}^{10}EQM_{Fold_i} = 14,671$$
+
+---
+
+## Validação Cruzada
+
+```{r, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+
+bind_cols(
+  data.frame(fold = paste0("fold ",rep(1:5, each = 2))),
+  cars %>% head(10)
+) %>%
+  kable() %>%
+  kableExtra::row_spec(1:2, background  = "#F8766D") %>%
+  kableExtra::row_spec(3:4, background  = "#D39200")%>%
+  kableExtra::row_spec(5:6, background  = "#93AA00")%>%
+  kableExtra::row_spec(7:8, background  = "#00BA38")%>%
+  kableExtra::row_spec(9:10, background = "#00C19F")
+
+```
 
 ---
 
@@ -1313,5 +1410,6 @@ a fazer
 - Variável resposta Positiva
 - Variável resposta Categórica
 - Relação funcional não linear entre X e Y
+- Muitas interações para testar entre as preditoras
 
 

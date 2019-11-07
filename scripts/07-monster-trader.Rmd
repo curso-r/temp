@@ -1,0 +1,186 @@
+---
+title: "Monster Trader V8"
+author: "Athos"
+date: "02/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(broom)
+library(readxl)
+library(janitor)
+library(MASS)
+library(lime)
+library(caret)
+library(GGally)
+library(car)
+library(ISLR)
+library(tidyverse)
+```
+
+## Dados
+
+```{r}
+monster_trader <- read_excel("../dados/Monster Trader_v8.xlsx", range = "CM2196:CU2626") %>%
+  clean_names() %>%
+  select(-x8, -delta_ampere) %>%
+  rename(
+    delta_pld_s_mais_1 = delta_pld_s_2_3,
+    delta_pld_s_mais_2 = delta_pld_s_2_4
+  )
+
+glimpse(monster_trader)
+```
+
+## Análise descritiva
+
+Relação univariada
+
+```{r}
+## Crie histogramas de cada variável e veja se alguma coluna tem valores faltantes (NAs)
+```
+
+Relação entre as variáveis (duas a duas)
+
+```{r, message=FALSE, warning=FALSE}
+## use a função ggpairs()
+## Analise as distribuições univariadas, as correlações e os gráficos de dispersão.
+```
+
+## Modelo linear
+
+```{r}
+# Crie uma regressão linear com lm(), utilizando o banco de dados monster_trader
+# e as variáveis 6 variáveis explicativas
+#  delta_ena_se
+#  delta_ena_s
+#  delta_pld_s_mais_1
+#  delta_pld_s_mais_2
+#  delta_acum_se
+#  delta_acum_s
+```
+
+
+```{r}
+## Consulte o summary() do modelo
+```
+
+```{r}
+## use a função plot() para estudar os resíduos.
+```
+
+
+## Outliers
+
+```{r}
+# outliers ------------------------------------------
+monster_trader_outliers <- monster_trader %>%
+  mutate(
+    outlier = 1:nrow(.) %in% c() ## <------- coloque os outliers aqui!!!!
+  ) %>%
+  gather(variavel, valor, -outlier)
+
+monster_trader_outliers  %>%
+  ggplot(aes(x = valor)) +
+  geom_density(alpha = 0.1) +
+  geom_jitter(aes(y = 1), alpha = 0.05) +
+  geom_jitter(aes(y = 1), colour = "red", size = 3, data = monster_trader_outliers %>% filter(outlier)) +
+  facet_wrap(~variavel, scale = "free")
+```
+
+## VIF
+
+```{r}
+# calcule o vif para o mt_lm
+```
+
+
+
+## LASSO
+
+```{r}
+library(glmnet)
+X <- model.matrix(delta_real ~ ., data = monster_trader)
+y <- monster_trader$delta_real
+mt_lasso <- cv.glmnet(X, y)
+plot(mt_lasso)
+
+glance_cv <- glance(mt_lasso)
+tidied <- tidy(mt_lasso$glmnet.fit)
+tidied %>%
+  filter(term != "(Intercept)") %>%
+  ggplot(aes(lambda, estimate, group = term, colour = term)) +
+  scale_x_log10() +
+  geom_line(size = 1.5) +
+  labs(y = "Betas", x  = "Lambda") +
+  geom_hline(yintercept = 0, colour = "grey40") +
+  geom_vline(xintercept = glance_cv$lambda.min) +
+  geom_vline(xintercept = glance_cv$lambda.1se, lty = 2) 
+```
+
+## Base de teste
+
+```{r}
+monster_trader_teste <- read_excel("../dados/Monster Trader_v8.xlsx", range = "CM2627:CU2655", col_names = FALSE) %>%
+  select(-...7, -...8) %>%
+  set_names(names(monster_trader))
+
+glimpse(monster_trader_teste)
+```
+
+```{r}
+## Crie as predicoes e veja qual modelo é melhor
+# Treino
+monster_trader_treino_com_pred <- monster_trader %>%
+  mutate(
+    pred_lm = predict(mt_lm, newdata = .),
+    pred_lasso = predict(mt_lasso, newx= model.matrix(delta_real ~ ., data = .), s = "lambda.1se")
+  )
+
+# Teste
+monster_trader_teste_com_pred <- monster_trader_teste %>%
+  mutate(
+    pred_lm = predict(mt_lm, newdata = .),
+    pred_lasso = predict(mt_lasso, newx= model.matrix(delta_real ~ ., data = .), s = "lambda.1se")
+  )
+```
+
+## Resíduos
+
+```{r}
+# Treino
+monster_trader_treino_com_pred %>%
+  gather(modelo, predicao, pred_lm, pred_lasso) %>%
+  ggplot(aes(x = predicao, y = delta_real, colour = modelo)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  geom_smooth(se = FALSE)
+
+monster_trader_treino_com_pred %>%
+  gather(modelo, predicao, pred_lm, pred_lasso) %>%
+  group_by(modelo) %>%
+  summarise(
+    eqm = sqrt(mean((delta_real - predicao)^2))
+  )
+```
+
+
+```{r}
+# Teste
+monster_trader_teste_com_pred %>%
+  gather(modelo, predicao, pred_lm, pred_lasso) %>%
+  ggplot(aes(x = predicao, y = delta_real, colour = modelo)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  geom_smooth(se = FALSE, method = "lm")
+
+monster_trader_teste_com_pred %>%
+  gather(modelo, predicao, pred_lm, pred_lasso) %>%
+  group_by(modelo) %>%
+  summarise(
+    eqm = sqrt(mean((delta_real - predicao)^2))
+  )
+```
+
+
